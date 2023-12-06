@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import com.cm.cmojbackendquestionservice.rabbitmq.MyMessageProducer;
 import com.cm.common.ErrorCode;
 import com.cm.constant.CommonConstant;
 import com.cm.exception.BusinessException;
@@ -16,7 +17,6 @@ import com.cm.model.enums.QuestionSubmitLanguageEnum;
 import com.cm.model.enums.QuestionSubmitStatusEnum;
 import com.cm.model.vo.QuestionSubmitVO;
 import com.cm.cmojbackendquestionservice.mapper.QuestionSubmitMapper;
-import com.cm.cmojbackendquestionservice.rabbitmq.MyMessageProducer;
 import com.cm.cmojbackendquestionservice.service.QuestionService;
 import com.cm.cmojbackendquestionservice.service.QuestionSubmitService;
 import com.cm.cmojbackendserviceclient.service.JudgeFeignClient;
@@ -30,10 +30,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
-* @author 李鱼皮
+* @author 赤木
 * @description 针对表【question_submit(题目提交)】的数据库操作Service实现
 * @createDate 2023-08-07 20:58:53
 */
@@ -91,12 +92,12 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据插入失败");
         }
         Long questionSubmitId = questionSubmit.getId();
-        // 发送消息
+         //发送消息
         myMessageProducer.sendMessage("code_exchange", "my_routingKey", String.valueOf(questionSubmitId));
         // 执行判题服务
-//        CompletableFuture.runAsync(() -> {
-//            judgeFeignClient.doJudge(questionSubmitId);
-//        });
+        CompletableFuture.runAsync(() -> {
+            judgeFeignClient.doJudge(questionSubmitId);
+        });
         return questionSubmitId;
     }
 

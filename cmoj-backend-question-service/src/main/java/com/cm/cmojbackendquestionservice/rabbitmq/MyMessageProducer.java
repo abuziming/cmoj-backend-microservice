@@ -1,6 +1,5 @@
 package com.cm.cmojbackendquestionservice.rabbitmq;
 
-
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 

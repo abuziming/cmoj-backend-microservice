@@ -23,10 +23,9 @@ import static com.cm.constant.UserConstant.USER_LOGIN_STATE;
 /**
  * 用户服务
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author <a href="https://github.com/abuziming">程序员鱼皮</a>
  */
-@FeignClient(name = "yuoj-backend-user-service", path = "/api/user/inner")
+@FeignClient(name = "cmoj-backend-user-service", path = "/api/user/inner")
 public interface UserFeignClient {
 
     /**
